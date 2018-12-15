@@ -13963,21 +13963,19 @@ var render = function() {
         "div",
         { attrs: { id: "nav" } },
         [
-          _c("router-link", { attrs: { to: "/rcm-vue-master" } }, [
-            _vm._v("Home")
-          ]),
+          _c("router-link", { attrs: { to: "/rcm-vue" } }, [_vm._v("Home")]),
           _vm._v(" |\n    "),
-          _c("router-link", { attrs: { to: "/rcm-vue-master/about" } }, [
+          _c("router-link", { attrs: { to: "/rcm-vue/about" } }, [
             _vm._v("About")
           ]),
           _vm._v(" "),
-          _c("router-link", { attrs: { to: "/rcm-vue-master/loyalty" } }, [
+          _c("router-link", { attrs: { to: "/rcm-vue/loyalty" } }, [
             _vm._v("Loyalty")
           ]),
           _vm._v(" "),
           _c(
             "a",
-            { attrs: { href: "http://localhost/rcm-vue-master/wp-login.php" } },
+            { attrs: { href: "http://localhost/rcm-vue/wp-login.php" } },
             [_vm._v("Login")]
           )
         ],
@@ -20114,7 +20112,7 @@ new __WEBPACK_IMPORTED_MODULE_1_vue___default.a({
 /***/ "./src/assets/rcm-brand-logo.png":
 /***/ (function(module, exports) {
 
-module.exports = "http://localhost/rcm-vue-master/wp-content/themes/rcm-vue/dist/images/rcm-brand-logo.png?677c12324fa89bc236f83fac6edc58d3";
+module.exports = "http://localhost/rcm-vue/wp-content/themes/rcm-vue/dist/images/rcm-brand-logo.png?677c12324fa89bc236f83fac6edc58d3";
 
 /***/ }),
 
@@ -20196,11 +20194,11 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_
 /* harmony default export */ __webpack_exports__["a"] = (new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
   mode: 'history',
   routes: [{
-    path: '/rcm-vue-master/',
+    path: '/rcm-vue/',
     name: 'home',
     component: __WEBPACK_IMPORTED_MODULE_2__views_Home_vue__["a" /* default */]
   }, {
-    path: '/rcm-vue-master/about',
+    path: '/rcm-vue/about',
     name: 'about',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -20209,7 +20207,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_
       return __webpack_require__.e/* import() */(0).then(__webpack_require__.bind(null, "./src/views/About.vue"));
     }
   }, {
-    path: '/rcm-vue-master/loyalty',
+    path: '/rcm-vue/loyalty',
     name: 'loyalty',
     props: true,
     // route level code-splitting
@@ -20219,7 +20217,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_
       return __webpack_require__.e/* import() */(0).then(__webpack_require__.bind(null, "./src/views/Loyalty.vue"));
     }
   }, {
-    path: '/rcm-vue-master/loyalty/:postSlug',
+    path: '/rcm-vue/loyalty/:postSlug',
     name: 'loyalty-single',
     props: true,
     // route level code-splitting
@@ -20229,7 +20227,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_
       return __webpack_require__.e/* import() */(0).then(__webpack_require__.bind(null, "./src/views/Loyalty-single.vue"));
     }
   }, {
-    path: '/rcm-vue-master/redeem',
+    path: '/rcm-vue/redeem',
     name: 'load-qr-reader',
     props: true,
     // route level code-splitting

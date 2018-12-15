@@ -19,7 +19,7 @@
           <div>offer PERL: {{ post.acf.offer_code }}</div>
           <div>offer Max Value: {{ post.acf.max_value }}</div>
            
-          <div>USER Value: {{ user }}</div>
+          <div v-if="user">USER Value: {{ user }}</div>
 
           
           <router-link :to="{ name: 'load-qr-reader' }">
@@ -60,34 +60,10 @@ export default {
 
   methods: {
     doYouFire: function (event){
-     alert('i fired from a reference in child component, but i live in parent')
-   },
+      alert('i fired from a reference in child component, but i live in parent');
+    }
     
-    /* addPoint: function() {
-      
-      //let newTitle = document.querySelector("#loyalty_value").value;
-
-      //var myData = { acf: { loyalty_item_1: newTitle } };
-      console.log("submitted: " + newTitle);
-      $.ajax({
-        url: WPsettings.root + "wp/v2/users/" + WPsettings.current_user_ID,
-        method: "POST",
-        //dataType: "json",
-        beforeSend: function(xhr) {
-          xhr.setRequestHeader("X-WP-Nonce", WPsettings.nonce);
-        },
-        data: {
-          // myData
-          // "acf": {"loyalty_item_1": newTitle}
-
-          acf: {
-            loyalty_item_1: newTitle
-          },
-          loyalty_item_1: newTitle,
-          test: newTitle
-        }
-      });
-    } ,*/
+ 
    
   },
  created () {
@@ -107,8 +83,11 @@ export default {
     var vm = this;
     var _offerSlug ;
     var _offerCode ;
+    var _userValue;
 
-    function loadLoyaltyItems(){
+    function loadLoyaltyItems(callback){
+      console.log('running loadLoyaltyItems() now...');
+      if(typeof WPsettings != 'undefined'){ //check if user is logged in
 
       //gather URL parameters
           function getUrlVars() {
@@ -122,17 +101,17 @@ export default {
             return vars;
           }
 
-      //axios.get('/rcm-vue/wp-json/wp/v2/loyalty/' + routePageID).then(response => {this.post = response.data});
+      //axios.get('/rcm-vue-master/wp-json/wp/v2/loyalty/' + routePageID).then(response => {this.post = response.data});
       
      
-        axios.get('/rcm-vue/wp-json/wp/v2/loyalty/' + routePageID).then(response => vm.post = response.data).then(function (response) {
+        axios.get('/rcm-vue-master/wp-json/wp/v2/loyalty/' + routePageID).then(response => vm.post = response.data).then(function (response) {
           //console.log(JSON.stringify(response));
           console.log(JSON.parse(JSON.stringify(response)));
 				  //set timeout so that waypoint waits until page has loaded before looking for element.
           
           var maxValue = response.acf.max_value
           var offerSlug = response.slug
-          _offerSlug = offerSlug
+           _offerSlug = offerSlug
           var isActive = response.acf.active
           var offerCode = response.acf.offer_code
           _offerCode = offerCode
@@ -140,13 +119,12 @@ export default {
           console.log('slug= ' + offerSlug);
 
           if(typeof isActive != 'undefined' && isActive == 'ON'){
-            getCurrentUserPoint();
+            //getCurrentUserPoint();
             console.log('offer is active');
             var perl = getUrlVars()["perl"];//get perl from getUrlVars() function
             var perlUrlDecoded = decodeURIComponent(perl) //decode the PERL url parameter to be able to compare in next line
-            if ( perlUrlDecoded == offerCode) {
-                
-                loyaltyVerifcationCheck()
+            if ( perlUrlDecoded == offerCode) {                
+
             } else {
               //alert('PERL DOES NOT MATCH!!')
               console.log('no PERL in URL')
@@ -154,19 +132,57 @@ export default {
           } else {
             alert('offer is inactive'); //make sure this fires, test it
           }
+          callback();
 			  });
         //var offerSlug = post.slug
-        
-      
-      
       
       
       //console.log(response);
+      } else {
+        alert('not logged, replace alert with something else')
+      }//end login check
+      
     } //end loadLoyaltyItems()
     
-    loadLoyaltyItems();
+    loadLoyaltyItems(getCurrentUserPoint);
 
-    function loyaltyVerifcationCheck() {
+    function getCurrentUserPoint(){
+      console.log('running getCurrentUserPoint() now...');
+      var offerSlug2 = _offerSlug;
+      console.log('offerSlug2 from getCurrentUserPoint() = ' + offerSlug2);
+
+      if(typeof WPsettings != 'undefined'){ //check if user is logged in
+      $.ajax({
+        url: WPsettings.root + "wp/v2/users/" + WPsettings.current_user_ID,
+        method: "get",
+        dataType: "json",
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("X-WP-Nonce", WPsettings.nonce);
+        },
+        success: function(data) {
+          //user = this.data
+          vm.user = data.custom_user_point_value[offerSlug2][0];
+          console.log('success= ' + offerSlug2);
+          //var offer_duration = data.acf.set_duration;
+          _userValue = data.custom_user_point_value[offerSlug2];
+          console.log('user value= ' + _userValue);
+          //var offer_active_status = data.acf.active;
+          //var offer_offer_monday = data.acf.offer_monday;
+          //console.log('offerduration= '+ offer_duration)
+          
+          
+          loyaltyVerifcationCheck(addPoint);
+
+          
+        }
+      });
+      } else {
+        alert('not logged in (show login popup or notification)  ');
+      }
+
+    }
+
+    function loyaltyVerifcationCheck(callback) {
       console.log('running loyaltyVerifcationCheck() now...');
       var _offerSlug2 = _offerSlug //redifine var to work with this function kinda like a global function
       var _offerCode2 = _offerCode
@@ -217,54 +233,33 @@ export default {
 
               
               //console.log("offerduration= " + offer_duration);
-              
+              //addPoint()
               
             
             
           }
+          callback();
     } // end loyaltyVerifcationCheck()
 
-    function getCurrentUserPoint(){
-      console.log('running getCurrentUserPoint() now...');
-      var offerSlug2 = String(_offerSlug);
-      console.log('offerSlug2 from getCurrentUserPoint() = ' + offerSlug2)
-      $.ajax({
-        url: WPsettings.root + "wp/v2/users/" + WPsettings.current_user_ID,
-        method: "get",
-        dataType: "json",
-        beforeSend: function(xhr) {
-          xhr.setRequestHeader("X-WP-Nonce", WPsettings.nonce);
-        },
-        success: function(data) {
-          //user = this.data
-          vm.user = data.custom_user_point_value[offerSlug2][0];
-          console.log('success= ' + offerSlug2);
-          //var offer_duration = data.acf.set_duration;
-          var _userValue = data.custom_user_point_value[offerSlug2];
-          console.log('user value= ' + _userValue);
-          //var offer_active_status = data.acf.active;
-          //var offer_offer_monday = data.acf.offer_monday;
-          //console.log('offerduration= '+ offer_duration)
-
-
-          
-        }
-      });
-
-    }
+    
     function addPoint(){
+          var _userValue2 = _userValue
           console.log('running addPoint() now...');
           var _offerSlug2 = _offerSlug;
 
           
-          var _offerSlug2_increment = data.loyalty_item_1++;
-          alert("vue value = " + loyalty_item_1_increment++);
-          alert("incremented value" + data.loyalty_item_1);
+          console.log('_offerSlug2 from addPoint()= ' + _offerSlug2);
+          //alert("vue value = " + loyalty_item_1_increment++);
+          console.log("user value from addPoint()" + _userValue2);
+          var _userValue2_increment = ++_userValue2;
+          console.log("user value incremented by 1= " + _userValue2_increment);
+          var data =   {custom_user_point_value : { "item_3" : _userValue2_increment }};
           $.ajax({
             url: WPsettings.root + "wp/v2/users/" + WPsettings.current_user_ID,
             method: "POST",
-            //dataType: "json",
-
+            contentType: 'application/json',
+            dataType: 'json',
+            //data: JSON.stringify(data),
             beforeSend: function(xhr) {
               xhr.setRequestHeader("X-WP-Nonce", WPsettings.nonce);
             },
@@ -275,8 +270,12 @@ export default {
               // "acf": {
               //     "loyalty_item_1": newTitle
               // },
-              loyalty_item_1: loyalty_item_1_increment++
-              /* test:newTitle */
+              custom_user_point_value : {
+                item_3: _userValue2_increment
+              }
+              
+              //data.custom_user_point_value[offerSlug2]: loyalty_item_1_increment++
+
             }
           });
     }

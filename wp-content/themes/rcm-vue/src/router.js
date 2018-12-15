@@ -10,12 +10,12 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/rcm-vue/',
+      path: '/rcm-vue-master/',
       name: 'home',
       component: Home
     },
     {
-      path: '/rcm-vue/about',
+      path: '/rcm-vue-master/about',
       name: 'about',
       // route level code-splitting
       // this generates a separate chunk (about.[hash].js) for this route
@@ -23,7 +23,7 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     },
     {
-      path: '/rcm-vue/loyalty',
+      path: '/rcm-vue-master/loyalty',
       name: 'loyalty',
       props: true,
       // route level code-splitting
@@ -32,7 +32,7 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/Loyalty.vue')
     },
     {
-      path: '/rcm-vue/loyalty/:postSlug',
+      path: '/rcm-vue-master/loyalty/:postSlug',
       name: 'loyalty-single',
       props: true,
       // route level code-splitting
@@ -41,7 +41,7 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/Loyalty-single.vue')
     },
     {
-      path: '/rcm-vue/redeem',
+      path: '/rcm-vue-master/redeem',
       name: 'load-qr-reader',
       props: true,
       // route level code-splitting

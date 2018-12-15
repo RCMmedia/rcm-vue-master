@@ -1,10 +1,10 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/rcm-vue">Home</router-link> |
-      <router-link to="/rcm-vue/about">About</router-link>
-      <router-link to="/rcm-vue/loyalty">Loyalty</router-link>
-      <a href="http://localhost/rcm-vue/wp-login.php">Login</a>
+      <router-link to="/rcm-vue-master">Home</router-link> |
+      <router-link to="/rcm-vue-master/about">About</router-link>
+      <router-link to="/rcm-vue-master/loyalty">Loyalty</router-link>
+      <a href="http://localhost/rcm-vue-master/wp-login.php">Login</a>
     </div>
     <router-view/>
   </div>

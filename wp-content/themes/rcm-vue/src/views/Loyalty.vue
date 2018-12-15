@@ -13,7 +13,7 @@
     </div>
 
     <div class="right">
-      <qrcode-reader @decode="onDecode" @init="onInit"><b>stuff here overlays the camera stream</b></qrcode-reader>
+      <!-- <qrcode-reader @decode="onDecode" @init="onInit"><b>stuff here overlays the camera stream</b></qrcode-reader> -->
       <div class="post-list-wrap">
 	      <div class="single-post" v-for="post in posts" :key="post.id">
 			    <div>{{ post.title.rendered }}</div>
@@ -141,9 +141,9 @@ export default {
     console.log('global_page_id ='+ global_page_id );
     var vm = this;
     function loadLoyaltyItems(){
-      axios.get('/rcm-vue/wp-json/wp/v2/loyalty').then(response => vm.posts = response.data).then(function (response) {
+      axios.get('/rcm-vue-master/wp-json/wp/v2/loyalty').then(response => vm.posts = response.data).then(function (response) {
 				console.log(response);
-  		});;
+  		});
       
       //console.log(response);
     }

@@ -18,10 +18,12 @@ methods: {
      alert('i fired from a reference in child component, but i live in parent')
    },
  onDecode(content) {
+   var vm = this;
       //this.paused = true;
       //console.log('qr code content= ' + content);
       
-
+      console.log('content= '+ content)
+      
       var parts =  content.split('/').reverse();
       console.log('parts= '+ parts[1])
       
@@ -31,7 +33,19 @@ methods: {
       //alert(res[1]);
       console.log(res_formatted);
       
-      getpageID()
+     /*  getpageID() */
+     axios.get('/rcm-vue/wp-json/wp/v2/loyalty/?slug=' + parts[1]).then(function (response) {
+          console.log(JSON.stringify(response));
+          //console.log(JSON.parse(JSON.stringify(response)));
+				  //set timeout so that waypoint waits until page has loaded before looking for element.
+          
+          var pageID = response.data[0].id;
+          var offerSlug = response.data[0].slug;
+          console.log('pageID= '+ pageID);
+          vm.$router.push({ path: '/rcm-vue-master/loyalty/' + offerSlug + '/' ,params: { postID: pageID, postSlug: offerSlug }, query: { perl: res_formatted }})
+
+          
+			  });
       // ...
     },
     async onInit(promise) {
@@ -79,15 +93,10 @@ getpageID(){
 
    },
    created(){
-     var url = "http://localhost/rcm-vue/loyalty/item_3/?perl=ZGE3ZDZkMGNhMQ%3D%3D"
-      //var params = content.split("?")[1].split("&");
+     /* var url = "http://localhost/rcm-vue/loyalty/item_3/?perl=ZGE3ZDZkMGNhMQ%3D%3D"
       var parts = url.split('/').reverse();
-      //console.log('all parts= '+parts)
-      console.log('parts= '+ parts[1])
-      //var res = url.match(/\A?perl=[^&]*/g);
-      // var res_formatted = res[0].replace("perl=", ""); 
-      
-      //console.log(res_formatted);
+      console.log('parts= '+ parts[1]) */
+
    }
 }
 </script>

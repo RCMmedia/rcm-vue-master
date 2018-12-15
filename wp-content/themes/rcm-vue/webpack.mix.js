@@ -13,7 +13,7 @@ let mix = require('laravel-mix');
 
 mix.webpackConfig({
   output: {
-    publicPath: '/rcm-vue/wp-content/themes/rcm-vue/dist/',
+    publicPath: '/rcm-vue-master/wp-content/themes/rcm-vue/dist/',
     chunkFilename: '[name].js',
 },
   module: {
@@ -65,7 +65,7 @@ mix.setPublicPath('dist')
       uglify: true
     })
    .version();
-   mix.setResourceRoot("http://localhost/rcm-vue/wp-content/themes/rcm-vue/dist/");
+   mix.setResourceRoot("http://localhost/rcm-vue-master/wp-content/themes/rcm-vue/dist/");
 
 
   

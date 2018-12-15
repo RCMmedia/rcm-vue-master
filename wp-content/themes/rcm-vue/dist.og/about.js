@@ -117,6 +117,30 @@ webpackJsonp([0],{
       alert('i fired from a reference in child component, but i live in parent');
     }
 
+    /* addPoint: function() {
+      
+      //let newTitle = document.querySelector("#loyalty_value").value;
+       //var myData = { acf: { loyalty_item_1: newTitle } };
+      console.log("submitted: " + newTitle);
+      $.ajax({
+        url: WPsettings.root + "wp/v2/users/" + WPsettings.current_user_ID,
+        method: "POST",
+        //dataType: "json",
+        beforeSend: function(xhr) {
+          xhr.setRequestHeader("X-WP-Nonce", WPsettings.nonce);
+        },
+        data: {
+          // myData
+          // "acf": {"loyalty_item_1": newTitle}
+           acf: {
+            loyalty_item_1: newTitle
+          },
+          loyalty_item_1: newTitle,
+          test: newTitle
+        }
+      });
+    } ,*/
+
   },
   created: function created() {
 
@@ -133,101 +157,62 @@ webpackJsonp([0],{
     var vm = this;
     var _offerSlug;
     var _offerCode;
-    var _userValue;
 
-    function loadLoyaltyItems(callback) {
-      console.log('running loadLoyaltyItems() now...');
-      if (typeof WPsettings != 'undefined') {
-        //check if user is logged in
+    function loadLoyaltyItems() {
 
-        //gather URL parameters
-        var getUrlVars = function getUrlVars() {
-          var vars = {};
-          var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
-            vars[key] = value;
-          });
-          return vars;
-        };
-
-        //axios.get('/rcm-vue-master/wp-json/wp/v2/loyalty/' + routePageID).then(response => {this.post = response.data});
-
-
-        __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/rcm-vue-master/wp-json/wp/v2/loyalty/' + routePageID).then(function (response) {
-          return vm.post = response.data;
-        }).then(function (response) {
-          //console.log(JSON.stringify(response));
-          console.log(JSON.parse(JSON.stringify(response)));
-          //set timeout so that waypoint waits until page has loaded before looking for element.
-
-          var maxValue = response.acf.max_value;
-          var offerSlug = response.slug;
-          _offerSlug = offerSlug;
-          var isActive = response.acf.active;
-          var offerCode = response.acf.offer_code;
-          _offerCode = offerCode;
-
-          console.log('slug= ' + offerSlug);
-
-          if (typeof isActive != 'undefined' && isActive == 'ON') {
-            //getCurrentUserPoint();
-            console.log('offer is active');
-            var perl = getUrlVars()["perl"]; //get perl from getUrlVars() function
-            var perlUrlDecoded = decodeURIComponent(perl); //decode the PERL url parameter to be able to compare in next line
-            if (perlUrlDecoded == offerCode) {} else {
-              //alert('PERL DOES NOT MATCH!!')
-              console.log('no PERL in URL');
-            }
-          } else {
-            alert('offer is inactive'); //make sure this fires, test it
-          }
-          callback();
+      //gather URL parameters
+      function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+          vars[key] = value;
         });
-        //var offerSlug = post.slug
+        return vars;
+      }
+
+      //axios.get('/rcm-vue/wp-json/wp/v2/loyalty/' + routePageID).then(response => {this.post = response.data});
 
 
-        //console.log(response);
-      } else {
-        alert('not logged, replace alert with something else');
-      } //end login check
+      __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get('/rcm-vue/wp-json/wp/v2/loyalty/' + routePageID).then(function (response) {
+        return vm.post = response.data;
+      }).then(function (response) {
+        //console.log(JSON.stringify(response));
+        console.log(JSON.parse(JSON.stringify(response)));
+        //set timeout so that waypoint waits until page has loaded before looking for element.
+
+        var maxValue = response.acf.max_value;
+        var offerSlug = response.slug;
+        _offerSlug = offerSlug;
+        var isActive = response.acf.active;
+        var offerCode = response.acf.offer_code;
+        _offerCode = offerCode;
+
+        console.log('slug= ' + offerSlug);
+
+        if (typeof isActive != 'undefined' && isActive == 'ON') {
+          getCurrentUserPoint();
+          console.log('offer is active');
+          var perl = getUrlVars()["perl"]; //get perl from getUrlVars() function
+          var perlUrlDecoded = decodeURIComponent(perl); //decode the PERL url parameter to be able to compare in next line
+          if (perlUrlDecoded == offerCode) {
+
+            loyaltyVerifcationCheck();
+          } else {
+            //alert('PERL DOES NOT MATCH!!')
+            console.log('no PERL in URL');
+          }
+        } else {
+          alert('offer is inactive'); //make sure this fires, test it
+        }
+      });
+      //var offerSlug = post.slug
+
+
+      //console.log(response);
     } //end loadLoyaltyItems()
 
-    loadLoyaltyItems(getCurrentUserPoint);
+    loadLoyaltyItems();
 
-    function getCurrentUserPoint() {
-      console.log('running getCurrentUserPoint() now...');
-      var offerSlug2 = _offerSlug;
-      console.log('offerSlug2 from getCurrentUserPoint() = ' + offerSlug2);
-
-      if (typeof WPsettings != 'undefined') {
-        //check if user is logged in
-        __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.ajax({
-          url: WPsettings.root + "wp/v2/users/" + WPsettings.current_user_ID,
-          method: "get",
-          dataType: "json",
-          beforeSend: function beforeSend(xhr) {
-            xhr.setRequestHeader("X-WP-Nonce", WPsettings.nonce);
-          },
-          success: function success(data) {
-            //user = this.data
-            vm.user = data.custom_user_point_value[offerSlug2][0];
-            console.log('success= ' + offerSlug2);
-            //var offer_duration = data.acf.set_duration;
-            _userValue = data.custom_user_point_value[offerSlug2];
-            console.log('user value= ' + _userValue);
-            //var offer_active_status = data.acf.active;
-            //var offer_offer_monday = data.acf.offer_monday;
-            //console.log('offerduration= '+ offer_duration)
-
-
-            loyaltyVerifcationCheck(addPoint);
-          }
-        });
-      } else {
-        alert('not logged in (show login popup or notification)  ');
-      }
-    }
-
-    function loyaltyVerifcationCheck(callback) {
+    function loyaltyVerifcationCheck() {
       console.log('running loyaltyVerifcationCheck() now...');
       var _offerSlug2 = _offerSlug; //redifine var to work with this function kinda like a global function
       var _offerCode2 = _offerCode;
@@ -266,30 +251,47 @@ webpackJsonp([0],{
 
 
         //console.log("offerduration= " + offer_duration);
-        //addPoint()
 
       }
-      callback();
     } // end loyaltyVerifcationCheck()
 
+    function getCurrentUserPoint() {
+      console.log('running getCurrentUserPoint() now...');
+      var offerSlug2 = String(_offerSlug);
+      console.log('offerSlug2 from getCurrentUserPoint() = ' + offerSlug2);
+      __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.ajax({
+        url: WPsettings.root + "wp/v2/users/" + WPsettings.current_user_ID,
+        method: "get",
+        dataType: "json",
+        beforeSend: function beforeSend(xhr) {
+          xhr.setRequestHeader("X-WP-Nonce", WPsettings.nonce);
+        },
+        success: function success(data) {
+          //user = this.data
+          vm.user = data.custom_user_point_value[offerSlug2][0];
+          console.log('success= ' + offerSlug2);
+          //var offer_duration = data.acf.set_duration;
+          var _userValue = data.custom_user_point_value[offerSlug2];
+          console.log('user value= ' + _userValue);
+          //var offer_active_status = data.acf.active;
+          //var offer_offer_monday = data.acf.offer_monday;
+          //console.log('offerduration= '+ offer_duration)
 
+        }
+      });
+    }
     function addPoint() {
-      var _userValue2 = _userValue;
       console.log('running addPoint() now...');
       var _offerSlug2 = _offerSlug;
 
-      console.log('_offerSlug2 from addPoint()= ' + _offerSlug2);
-      //alert("vue value = " + loyalty_item_1_increment++);
-      console.log("user value from addPoint()" + _userValue2);
-      var _userValue2_increment = ++_userValue2;
-      console.log("user value incremented by 1= " + _userValue2_increment);
-      var data = { custom_user_point_value: { "item_3": _userValue2_increment } };
+      var _offerSlug2_increment = data.loyalty_item_1++;
+      alert("vue value = " + loyalty_item_1_increment++);
+      alert("incremented value" + data.loyalty_item_1);
       __WEBPACK_IMPORTED_MODULE_1_jquery___default.a.ajax({
         url: WPsettings.root + "wp/v2/users/" + WPsettings.current_user_ID,
         method: "POST",
-        contentType: 'application/json',
-        dataType: 'json',
-        //data: JSON.stringify(data),
+        //dataType: "json",
+
         beforeSend: function beforeSend(xhr) {
           xhr.setRequestHeader("X-WP-Nonce", WPsettings.nonce);
         },
@@ -300,12 +302,9 @@ webpackJsonp([0],{
           // "acf": {
           //     "loyalty_item_1": newTitle
           // },
-          custom_user_point_value: {
-            item_3: _userValue2_increment
-
-            //data.custom_user_point_value[offerSlug2]: loyalty_item_1_increment++
-
-          } }
+          loyalty_item_1: loyalty_item_1_increment++
+          /* test:newTitle */
+        }
       });
     }
   }
@@ -492,11 +491,11 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
     console.log('global_page_id =' + global_page_id);
     var vm = this;
     function loadLoyaltyItems() {
-      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/rcm-vue-master/wp-json/wp/v2/loyalty').then(function (response) {
+      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/rcm-vue/wp-json/wp/v2/loyalty').then(function (response) {
         return vm.posts = response.data;
       }).then(function (response) {
         console.log(response);
-      });
+      });;
 
       //console.log(response);
     }
@@ -595,11 +594,9 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
       alert('i fired from a reference in child component, but i live in parent');
     },
     onDecode: function onDecode(content) {
-      var vm = this;
       //this.paused = true;
       //console.log('qr code content= ' + content);
 
-      console.log('content= ' + content);
 
       var parts = content.split('/').reverse();
       console.log('parts= ' + parts[1]);
@@ -610,17 +607,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
       //alert(res[1]);
       console.log(res_formatted);
 
-      /*  getpageID() */
-      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/rcm-vue/wp-json/wp/v2/loyalty/?slug=' + parts[1]).then(function (response) {
-        console.log(JSON.stringify(response));
-        //console.log(JSON.parse(JSON.stringify(response)));
-        //set timeout so that waypoint waits until page has loaded before looking for element.
-
-        var pageID = response.data[0].id;
-        var offerSlug = response.data[0].slug;
-        console.log('pageID= ' + pageID);
-        vm.$router.push({ path: '/rcm-vue-master/loyalty/' + offerSlug + '/', params: { postID: pageID, postSlug: offerSlug }, query: { perl: res_formatted } });
-      });
+      getpageID();
       // ...
     },
     onInit: function onInit(promise) {
@@ -685,10 +672,15 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
     }
   },
   created: function created() {
-    /* var url = "http://localhost/rcm-vue/loyalty/item_3/?perl=ZGE3ZDZkMGNhMQ%3D%3D"
-     var parts = url.split('/').reverse();
-     console.log('parts= '+ parts[1]) */
+    var url = "http://localhost/rcm-vue/loyalty/item_3/?perl=ZGE3ZDZkMGNhMQ%3D%3D";
+    //var params = content.split("?")[1].split("&");
+    var parts = url.split('/').reverse();
+    //console.log('all parts= '+parts)
+    console.log('parts= ' + parts[1]);
+    //var res = url.match(/\A?perl=[^&]*/g);
+    // var res_formatted = res[0].replace("perl=", ""); 
 
+    //console.log(res_formatted);
   }
 });
 
@@ -1613,9 +1605,7 @@ var render = function() {
                   _vm._v("offer Max Value: " + _vm._s(_vm.post.acf.max_value))
                 ]),
                 _vm._v(" "),
-                _vm.user
-                  ? _c("div", [_vm._v("USER Value: " + _vm._s(_vm.user))])
-                  : _vm._e(),
+                _c("div", [_vm._v("USER Value: " + _vm._s(_vm.user))]),
                 _vm._v(" "),
                 _c(
                   "router-link",
@@ -1665,43 +1655,54 @@ var render = function() {
       ])
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "right" }, [
-      _c(
-        "div",
-        { staticClass: "post-list-wrap" },
-        _vm._l(_vm.posts, function(post) {
-          return _c(
-            "div",
-            { key: post.id, staticClass: "single-post" },
-            [
-              _c("div", [_vm._v(_vm._s(post.title.rendered))]),
-              _vm._v(" "),
-              _c(
-                "router-link",
-                {
-                  attrs: {
-                    to: {
-                      name: "loyalty-single",
-                      params: { postID: post.id, postSlug: post.slug }
+    _c(
+      "div",
+      { staticClass: "right" },
+      [
+        _c(
+          "qrcode-reader",
+          { on: { decode: _vm.onDecode, init: _vm.onInit } },
+          [_c("b", [_vm._v("stuff here overlays the camera stream")])]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "post-list-wrap" },
+          _vm._l(_vm.posts, function(post) {
+            return _c(
+              "div",
+              { key: post.id, staticClass: "single-post" },
+              [
+                _c("div", [_vm._v(_vm._s(post.title.rendered))]),
+                _vm._v(" "),
+                _c(
+                  "router-link",
+                  {
+                    attrs: {
+                      to: {
+                        name: "loyalty-single",
+                        params: { postID: post.id, postSlug: post.slug }
+                      }
                     }
-                  }
-                },
-                [
-                  _vm._v(
-                    "\n           View Offer |ID = " +
-                      _vm._s(post.id) +
-                      " | Slug = " +
-                      _vm._s(post.slug) +
-                      "\n          "
-                  )
-                ]
-              )
-            ],
-            1
-          )
-        })
-      )
-    ])
+                  },
+                  [
+                    _vm._v(
+                      "\n           View Offer |ID = " +
+                        _vm._s(post.id) +
+                        " | Slug = " +
+                        _vm._s(post.slug) +
+                        "\n          "
+                    )
+                  ]
+                )
+              ],
+              1
+            )
+          })
+        )
+      ],
+      1
+    )
   ])
 }
 var staticRenderFns = []
